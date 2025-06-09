@@ -11,7 +11,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
 // configure env file
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://chat-box-tool.vercel.app/',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
