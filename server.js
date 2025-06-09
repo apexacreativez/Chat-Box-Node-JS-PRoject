@@ -24,7 +24,7 @@ app.use(morgan("dev"));
 app.use('/api/v1/student', require("./routes/studentsRoute.js"));
 
 // Port
-const PORT = process.env.PORT || 8085;
+const PORT = process.env.DB_PORT || 8085;
 app.get("/", (req, res) => {
   res.send("Backend is live!");
 });
