@@ -7,7 +7,7 @@ const mySqlPool = mysql.createPool({
   database : process.env.DB_NAME,
   port     : process.env.DB_PORT || 26266,
   ssl      : {
-    rejectUnauthorized: true
+    rejectUnauthorized: false
   }
 });
 
