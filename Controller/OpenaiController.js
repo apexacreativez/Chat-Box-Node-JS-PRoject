@@ -26,7 +26,7 @@ const OpenAIChatAPi = async (message) => {
 const Apifunction = async (message) => {
   try {
     const response = await openaisecond.chat.completions.create({
-      model: "mistralai/devstral-small:free",
+      model: "deepseek/deepseek-r1-0528:free",
       messages: [{ role: "user", content: message }],
     });
 
