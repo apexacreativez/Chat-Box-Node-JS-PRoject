@@ -42,9 +42,11 @@ router.post("/login", LoginUser);
 // OPENAI Chat (/ask)
 router.post("/ask", async (req, res) => {
   const { message } = req.body;
+
   if (!message || message.trim() === "") {
     return res.status(400).json({ error: "Message is required" });
-}
+  }
+
   try {
     const { reply, statuscode } = await Apifunction(message);
     res.status(statuscode).json({ reply, statuscode });
@@ -52,6 +54,7 @@ router.post("/ask", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 router.post("/openai", async (req, res) => {
   const { message } = req.body;
