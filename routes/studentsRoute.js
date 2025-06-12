@@ -13,6 +13,8 @@ const authenticateToken = require("../middleware/auth");
 const { LoginUser } = require("../Controller/LoginController");
 const Apifunction = require("../Controller/OpenaiController");
 const OpenAIChatAPi = require("../Controller/OpenaiController");
+const { body, validationResult } = require("express-validator");
+const logger = require('../middleware/logger');
 
 const axios = require("axios");
 
@@ -40,20 +42,36 @@ router.post("/createuser", CreateUser);
 router.post("/login", LoginUser);
 
 // OPENAI Chat (/ask)
-router.post("/ask", async (req, res) => {
-  const { message } = req.body;
+router.post(
+  "/ask",
+  [
+    body("message")
+      .trim()
+      .notEmpty()
+      .withMessage("Message is required")
+      .isLength({ min: 2 })
+      .withMessage("Message must be at least 2 characters long"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.warn(`Validation failed: ${errors.array()[0].msg}`);
+      return res.status(400).json({ error: errors.array()[0].msg });
+    }
 
-  if (!message || message.trim() === "") {
-    return res.status(400).json({ error: "Message is required" });
-  }
+    const { message } = req.body;
+    logger.info(`Received message: ${message}`);
 
-  try {
-    const { reply, statuscode } = await Apifunction(message);
-    res.status(statuscode).json({ reply, statuscode });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    try {
+      const { reply, statuscode } = await Apifunction(message);
+      logger.info(`API call success. Reply sent.`);
+      res.status(statuscode).json({ reply, statuscode });
+    } catch (error) {
+      logger.error(`API call failed: ${error.message}`);
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
-});
+);
 
 
 router.post("/openai", async (req, res) => {
